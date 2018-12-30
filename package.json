@@ -1,0 +1,20 @@
+{
+  "name": "keycloak-nodejs-graphql",
+  "version": "0.0.1",
+  "description": "Integrate keycloak via graphql directives",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/graphql": "^14.0.3",
+    "apollo-errors": "^1.9.0",
+    "graphql": "^14.0.2",
+    "graphql-tools": "^4.0.3",
+    "tslint": "^5.12.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.2.2"
+  }
+}
