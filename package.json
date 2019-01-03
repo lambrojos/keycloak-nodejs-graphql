@@ -1,26 +1,51 @@
 {
-  "name": "keycloak-nodejs-graphql",
-  "version": "0.0.1",
-  "description": "Integrate keycloak via graphql directives",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "_from": "github:lambrojos/keycloak-nodejs-graphql",
+  "_id": "keycloak-nodejs-graphql@0.0.1",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/keycloak-nodejs-graphql",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "lambrojos/keycloak-nodejs-graphql",
+    "rawSpec": "lambrojos/keycloak-nodejs-graphql",
+    "saveSpec": "github:lambrojos/keycloak-nodejs-graphql",
+    "fetchSpec": null,
+    "gitCommittish": null
   },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "github:lambrojos/keycloak-nodejs-graphql#1cf2bd3c2963988d9b56506308e8155a89fdeae5",
+  "_spec": "lambrojos/keycloak-nodejs-graphql",
+  "_where": "/home/zio/code/rdcom/telemaco-be",
   "author": "",
-  "license": "ISC",
+  "bundleDependencies": false,
   "dependencies": {
-    "apollo-errors": "^1.9.0"
+    "apollo-errors": "^1.9.0",
+    "jsonwebtoken": "^8.4.0"
   },
-  "peerDependencies": {
-    "graphql": "^14.0.2",
-    "graphql-tools": "^5.0.3"
-  },
+  "deprecated": false,
+  "description": "Integrate keycloak via graphql directives",
   "devDependencies": {
     "@types/graphql": "^14.0.3",
+    "@types/jsonwebtoken": "^8.3.0",
     "graphql": "^14.0.2",
     "graphql-tools": "^4.0.3",
     "tslint": "^5.12.0",
     "tslint-config-standard": "^8.0.1",
     "typescript": "^3.2.2"
-  }
+  },
+  "license": "ISC",
+  "main": "index.js",
+  "name": "keycloak-nodejs-graphql",
+  "peerDependencies": {
+    "graphql": "^14.0.2",
+    "graphql-tools": "^5.0.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.0.1"
 }

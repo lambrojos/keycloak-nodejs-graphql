@@ -1,20 +1,15 @@
-import { createError } from 'apollo-errors'
-import { defaultFieldResolver, DirectiveLocation, GraphQLDirective, GraphQLObjectType, GraphQLField } from 'graphql'
+import { defaultFieldResolver, DirectiveLocation, GraphQLDirective, GraphQLField, GraphQLObjectType } from 'graphql'
 import { SchemaDirectiveVisitor } from 'graphql-tools'
+import AccessToken from './AccessToken'
 
-type AuthObjectType = GraphQLObjectType & {
-  _requiredAuthRole: string | undefined
-  _authFieldsWrapped: boolean | undefined
-}
-type AuthField = GraphQLField<any, any> & {
-  _requiredAuthRole: string | undefined
-}
+import jwt from 'jsonwebtoken'
 
-const AuthError = createError('AuthError', {
-  message: 'Access denied'
-})
+const formatPublicKey = (key: string) =>
+  `-----BEGIN PUBLIC KEY-----\n${key}\n-----END PUBLIC KEY-----\n`
 
-class KeyCloakDirective extends SchemaDirectiveVisitor {
+interface IOpts { jwtKey: string, clientId: string}
+
+export default (opts: IOpts) => class KeyCloakDirective extends SchemaDirectiveVisitor {
 
   public static getDirectiveDeclaration () {
     return new GraphQLDirective({
@@ -23,43 +18,23 @@ class KeyCloakDirective extends SchemaDirectiveVisitor {
     })
   }
 
-  visitObject(type: AuthObjectType) {
-    this.ensureFieldsWrapped(type);
-    type._requiredAuthRole = this.args.requires;
-  }
-  // Visitor methods for nested types like fields and arguments
-  // also receive a details object that provides information about
-  // the parent and grandparent types.
-  visitFieldDefinition(field: AuthField, details: { objectType : AuthObjectType}) {
-    this.ensureFieldsWrapped(details.objectType);
-    field._requiredAuthRole = this.args.requires;
+  public visitObject (type: GraphQLObjectType) {
+    Object.values(type.getFields()).forEach(this.visitFieldDefinition.bind(this))
   }
 
-  ensureFieldsWrapped(objectType: AuthObjectType) {
-    // Mark the GraphQLObjectType object to avoid re-wrapping:
-    if (objectType._authFieldsWrapped) return;
-    objectType._authFieldsWrapped = true;
+  public visitFieldDefinition (field: GraphQLField<any, any>) {
+    const { resolve = defaultFieldResolver } = field
 
-    const fields = objectType.getFields();
+    field.resolve = (root: any, args: any, ctx: any, info: any) => {
+      if (! ctx.accessToken) {
+        ctx.accessToken = new AccessToken(this.verifyKey(ctx.token) as token, args.clientId)
+      }
 
-    Object.keys(fields).forEach(fieldName => {
-      const field = <AuthField> fields[fieldName];
-      const { resolve = defaultFieldResolver } = field;
-      field.resolve = async function (...args) {
-        // Get the required Role from the field first, falling back
-        // to the objectType if no Role is required by the field:
-        const requiredRole =
-          field._requiredAuthRole ||
-          objectType._requiredAuthRole;
+      return resolve.call(this, root, args, ctx, info)
+    }
+  }
 
-        if (! requiredRole) {
-          return resolve.apply(this, args);
-        }
-
-        const context = args[3];
-        console.log(context);
-        return resolve.apply(this, args);
-      };
-    });
+  private verifyKey (token: string) {
+    return jwt.verify(token, formatPublicKey(opts.jwtKey))
   }
 }
