@@ -5,6 +5,9 @@ class AccessToken {
         this.content = content;
         this.clientId = clientId;
     }
+    hasGroup(name) {
+        return this.content.groups.includes(name);
+    }
     hasRole(name) {
         if (!this.clientId) {
             return false;

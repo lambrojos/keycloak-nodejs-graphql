@@ -5,7 +5,8 @@ module.exports = ({ settings }) => {
   const KeyCloakDirective = keycloakDirective(
     {
       jwtKey: settings.jwtKey,
-      clientId: settings.sso.connect.resource
+      clientId: settings.sso.connect.resource,
+      authenticationError: 'errors.user.not_authenticated'
     }
   )
 

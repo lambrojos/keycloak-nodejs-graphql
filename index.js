@@ -4,32 +4,59 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_1 = require("graphql");
-const AccessToken_1 = __importDefault(require("./AccessToken"));
 const graphql_tools_1 = require("graphql-tools");
+const AccessToken_1 = __importDefault(require("./AccessToken"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const formatPublicKey = (key) => `-----BEGIN PUBLIC KEY-----\n${key}\n-----END PUBLIC KEY-----\n`;
-exports.default = (opts) => class KeyCloakDirective extends graphql_tools_1.SchemaDirectiveVisitor {
+exports.default = ({ jwtKey, clientId, authenticationError = 'not authenticated', authorizationError = 'Unauthorized' }) => class KeyCloakDirective extends graphql_tools_1.SchemaDirectiveVisitor {
+    constructor(config) {
+        super(config);
+        this.authenticationError = config.args.authenticationError || authorizationError;
+        this.authorizationError = config.args.authenticationError || authorizationError;
+    }
     static getDirectiveDeclaration() {
         return new graphql_1.GraphQLDirective({
             locations: [graphql_1.DirectiveLocation.FIELD_DEFINITION, graphql_1.DirectiveLocation.OBJECT],
-            name: 'protect'
+            name: 'protect',
+            args: {
+                role: {
+                    type: graphql_1.GraphQLString,
+                },
+                group: {
+                    type: graphql_1.GraphQLString,
+                }
+            }
         });
     }
     visitObject(type) {
-        Object.values(type.getFields()).forEach(this.visitFieldDefinition.bind(this));
+        return Object.values(type.getFields()).forEach(this.visitFieldDefinition.bind(this));
     }
     visitFieldDefinition(field) {
+        this.authenticationError = this.args.authenticationError || authorizationError;
         const { resolve = graphql_1.defaultFieldResolver } = field;
-        console.log(field.name);
         field.resolve = (root, args, ctx, info) => {
-            console.log('apperino');
+            let ok = true;
             if (!ctx.accessToken) {
-                ctx.accessToken = new AccessToken_1.default(this.verifyKey(ctx.token), args.clientId);
+                ctx.accessToken = new AccessToken_1.default(this.verifyKey(ctx.token), clientId);
+            }
+            if (this.args.group) {
+                ok = ctx.accessToken.hasGroup(this.args.group);
+            }
+            if (this.args.role) {
+                ok = ctx.accessToken.hasRole(this.args.role);
+            }
+            if (!ok) {
+                throw new Error(this.authorizationError);
             }
             return resolve.call(this, root, args, ctx, info);
         };
     }
     verifyKey(token) {
-        return jsonwebtoken_1.default.verify(token, formatPublicKey(opts.jwtKey));
+        try {
+            return jsonwebtoken_1.default.verify(token, formatPublicKey(jwtKey));
+        }
+        catch (e) {
+            throw new Error(this.authenticationError);
+        }
     }
 };

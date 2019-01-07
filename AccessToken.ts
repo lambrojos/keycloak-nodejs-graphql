@@ -1,6 +1,10 @@
 export default class AccessToken {
   constructor (public content: token, private clientId: string) {}
 
+  public hasGroup (name: string) {
+    return this.content.groups.includes(name)
+  }
+
   public hasRole (name: string) {
     if (!this.clientId) {
       return false

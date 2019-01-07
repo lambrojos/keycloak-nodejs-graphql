@@ -4,7 +4,16 @@
   "_inBundle": false,
   "_integrity": "",
   "_location": "/keycloak-nodejs-graphql",
-  "_phantomChildren": {},
+  "_phantomChildren": {
+    "jws": "3.1.5",
+    "lodash.includes": "4.3.0",
+    "lodash.isboolean": "3.0.3",
+    "lodash.isinteger": "4.0.4",
+    "lodash.isnumber": "3.0.3",
+    "lodash.isplainobject": "4.0.6",
+    "lodash.isstring": "4.0.1",
+    "lodash.once": "4.1.1"
+  },
   "_requested": {
     "type": "git",
     "raw": "lambrojos/keycloak-nodejs-graphql",
@@ -17,7 +26,7 @@
     "#USER",
     "/"
   ],
-  "_resolved": "github:lambrojos/keycloak-nodejs-graphql#1cf2bd3c2963988d9b56506308e8155a89fdeae5",
+  "_resolved": "github:lambrojos/keycloak-nodejs-graphql#b1907c1399da30a6ceaa5c141f55edac7f24667c",
   "_spec": "lambrojos/keycloak-nodejs-graphql",
   "_where": "/home/zio/code/rdcom/telemaco-be",
   "author": "",
