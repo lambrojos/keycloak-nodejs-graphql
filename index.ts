@@ -43,8 +43,8 @@ class KeyCloakDirective extends SchemaDirectiveVisitor {
 
   constructor (config: any) {
     super(config)
-    this.authenticationError = config.args.authenticationError || authorizationError
-    this.authorizationError = config.args.authenticationError || authorizationError
+    this.authenticationError = config.args.authenticationError || authenticationError
+    this.authorizationError = config.args.authorizationError || authorizationError
   }
 
   public visitObject (type: GraphQLObjectType) {
