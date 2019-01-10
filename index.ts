@@ -52,8 +52,6 @@ class KeyCloakDirective extends SchemaDirectiveVisitor {
   }
 
   public visitFieldDefinition (field: GraphQLField<any, any>) {
-    this.authenticationError = this.args.authenticationError || authorizationError
-
     const { resolve = defaultFieldResolver } = field
     field.resolve = (root: any, args: any, ctx: any, info: any) => {
       let ok = true
