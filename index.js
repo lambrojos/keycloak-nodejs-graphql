@@ -32,7 +32,6 @@ exports.default = ({ jwtKey, clientId, authenticationError = 'not authenticated'
         return Object.values(type.getFields()).forEach(this.visitFieldDefinition.bind(this));
     }
     visitFieldDefinition(field) {
-        this.authenticationError = this.args.authenticationError || authorizationError;
         const { resolve = graphql_1.defaultFieldResolver } = field;
         field.resolve = (root, args, ctx, info) => {
             let ok = true;
