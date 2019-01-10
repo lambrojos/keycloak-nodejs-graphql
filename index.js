@@ -9,24 +9,24 @@ const AccessToken_1 = __importDefault(require("./AccessToken"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const formatPublicKey = (key) => `-----BEGIN PUBLIC KEY-----\n${key}\n-----END PUBLIC KEY-----\n`;
 exports.default = ({ jwtKey, clientId, authenticationError = 'not authenticated', authorizationError = 'Unauthorized' }) => class KeyCloakDirective extends graphql_tools_1.SchemaDirectiveVisitor {
-    constructor(config) {
-        super(config);
-        this.authenticationError = config.args.authenticationError || authorizationError;
-        this.authorizationError = config.args.authenticationError || authorizationError;
-    }
     static getDirectiveDeclaration() {
         return new graphql_1.GraphQLDirective({
-            locations: [graphql_1.DirectiveLocation.FIELD_DEFINITION, graphql_1.DirectiveLocation.OBJECT],
-            name: 'protect',
             args: {
-                role: {
-                    type: graphql_1.GraphQLString,
-                },
                 group: {
-                    type: graphql_1.GraphQLString,
+                    type: graphql_1.GraphQLString
+                },
+                role: {
+                    type: graphql_1.GraphQLString
                 }
-            }
+            },
+            locations: [graphql_1.DirectiveLocation.FIELD_DEFINITION, graphql_1.DirectiveLocation.OBJECT],
+            name: 'protect'
         });
+    }
+    constructor(config) {
+        super(config);
+        this.authenticationError = config.args.authenticationError || authenticationError;
+        this.authorizationError = config.args.authorizationError || authorizationError;
     }
     visitObject(type) {
         return Object.values(type.getFields()).forEach(this.visitFieldDefinition.bind(this));
